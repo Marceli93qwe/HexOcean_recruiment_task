@@ -1,6 +1,6 @@
-#About application
+# About application
 The application is a simplified representation of a form for ordering food.
-#How to run this application
+# How to run this application
 1. Download the source code
 2. Open downloaded directory as a project in your IDE.
 3. Open the integrated console, and download the necessary packages with the "npm install" command
