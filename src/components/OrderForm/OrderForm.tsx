@@ -5,9 +5,19 @@ import {Button, MenuItem, SelectChangeEvent, TextField} from "@mui/material";
 import {TimeInput} from "../common/Form/TimeInput";
 import {SelectList} from "../common/Form/SelectList";
 import {OptionalInputs} from "./OptionalInputs";
-
+import {SendRequest} from "../../utils/sendRequest";
 
 export const OrderForm = () => {
+
+    const initialValuesState = {
+        dishName: '',
+        preparationTime: dayjs("2022-04-17T15:30"),
+        type: '',
+        slices: undefined,
+        diameter: undefined,
+        spiciness: undefined,
+        num_of_slices: undefined,
+    }
     const [values, setValues] = useState<{
         dishName: string;
         preparationTime: Dayjs | null;
@@ -17,11 +27,8 @@ export const OrderForm = () => {
         spiciness?: number,
         num_of_slices?: number,
     }>
-    ({
-        dishName: '',
-        preparationTime: dayjs("2022-04-17T15:30"),
-        type: '',
-    });
+    (initialValuesState);
+
 
     const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<HTMLSelectElement>) => {
         const {name, value} = event.target;
@@ -30,7 +37,7 @@ export const OrderForm = () => {
             name === "spiciness" && Number(value) < 1 ||
             name === "spiciness" && Number(value) > 10 ||
             name === "slices" && Number(value) < 1 ||
-            name === "diameter" && Number(value) < 1 ||
+            name === "diameter" && Number(value) < 0 ||
             name === "num_of_slices" && Number(value) < 1
         ) return;
         setValues((prevValues) => ({
@@ -52,12 +59,7 @@ export const OrderForm = () => {
         const timeISOString = values.preparationTime?.toISOString(); //conversion of preparationTime value to iso string
         const url = 'https://umzzcc503l.execute-api.us-west-2.amazonaws.com/dishes/';
         (async () => {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
+            const response = await SendRequest(url, JSON.stringify({
                     name: values.dishName,
                     preparation_time: timeISOString && new Date(timeISOString).toLocaleTimeString(),
                     type: values.type,
@@ -65,15 +67,14 @@ export const OrderForm = () => {
                     diameter: values.diameter,
                     spiciness_scale: values.spiciness,
                     slices_of_bread: values.num_of_slices,
-                })
-            })
-            console.log(await response.json());
+                }
+            ));
+            setValues(initialValuesState);
         })()
 
     }
 
     return (
-
         <Form submit={handleSubmit} spacing={3} formTitle={"Order your food"}>
             <TextField
                 name="dishName"
