@@ -1,17 +1,16 @@
 import React from 'react';
-import {Box} from "@mui/material";
+import {Wrapper} from "./common/Wrapper";
+import {OrderForm} from "./OrderForm/OrderForm";
 
 function App() {
+
     return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            margin="auto"
-            width="50vw"
-            height="100vh" // full window height
+        <Wrapper
+            width={"100vw"}
+            height={"100vh"}
         >
-        </Box>
+            <OrderForm/>
+        </Wrapper>
     );
 }
 
